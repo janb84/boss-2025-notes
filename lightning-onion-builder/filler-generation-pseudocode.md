@@ -34,7 +34,7 @@ FUNCTION generate_filler()
             end LOOP
         end if
 
-        // Step 3: Extend the current hop payload size in the filler with 0 (zero's)
+        // Step 3: Extend the filler with current hop payload size with 0 (zero's)
         // [1300] -> [1300 + current_payload_size]
         LOOP current_payload_size_length
             filler.add = 0 // extend the filler wiht payload size zeros
