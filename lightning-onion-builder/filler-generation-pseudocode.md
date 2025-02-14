@@ -13,13 +13,16 @@ FUNCTION generate_filler()
     // Determining the maximum hop payload size of all the payload will ensure that the
     // length of the filler is sufficient.  
     // This is just a optimization, one can also pick 2600 as an intermediate filler length.
+
     filler_size = 1300 + max(hop_sizes) // Use the maximum hop payload size that is the array, for the initial filler size
 
     // Initialize the filler array with the calculated size
+
     filler = init ARRAY of zeros with size filler_size
 
     // Loop trough all the hops.
     // The last hop does not obfuscate, so we skip it
+
     LOOP total_number_of_hops - 1 DO
 
         // Step 1: Get the current hop packet size 
@@ -40,27 +43,33 @@ FUNCTION generate_filler()
 
         // Step 3: Extend the filler with current hop payload size with 0 (zero's)
         // [1300] -> [1300 + current_payload_size]
+
         LOOP current_payload_size_length
             filler.add = 0 // extend the filler wiht payload size zeros
 
-        // Step 4: Generate a pseudo-random byte stream using the current hop's rho key 
+        // Step 4: Generate a pseudo-random byte stream using the current hop's rho key
+
         stream_key = generate_key("rho", shared_secret_of_current_hop)
         stream_bytes = generate_cipher_stream(stream_key, 1300 + current_hop_size)
 
         // Step 5: Obfuscate the filler by XORing it with the generated stream bytes
+
         filler = filler XOR stream_bytes
  
     end LOOP
 
     // Step 6: Get the size of the last hop
+
     last_hop_size = hop_sizes[num_hops - 1]
 
     // Step 7: Cut the filler down to the correct length based on the total hop sizes
+
     total_hop_size = sum(hop_sizes) // Calculate the total size of all hops
     filler_length = total_hop_size - last_hop_size // Adjust for the last hop
 
     // Step 8: Return the final filler, adjusted to the correct length
     // to make sure the filler is 1300 bytes
+
     return filler[0 - filler_legnth]
 
 end FUNCTION
