@@ -9,7 +9,11 @@ The [bolt 4 specification](https://github.com/lightning/bolts/blob/master/04-oni
 FUNCTION generate_filler() 
 
     // Calculate the total filler size based on the number of hops and the maximum hop size
-    filler_size = 1300 + max(hop_sizes) // Use the maximum hop size for the initial filler size
+    // Every round the filler is constructed by adding zero's (0) to the end of the filler.
+    // Determining the maximum hop payload size of all the payload will ensure that the
+    // length of the filler is sufficient.  
+    // This is just a optimization, one can also pick 2600 as an intermediate filler length.
+    filler_size = 1300 + max(hop_sizes) // Use the maximum hop payload size that is the array, for the initial filler size
 
     // Initialize the filler array with the calculated size
     filler = init ARRAY of zeros with size filler_size
